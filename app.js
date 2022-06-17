@@ -9,11 +9,21 @@ const pageController = require('./controllers/pageController');
 const app = express();
 
 // connect DB
-mongoose.connect('mongodb://localhost/pcast-test-db', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  // usedFindAndModify: false,
-});
+mongoose
+  .connect(
+    'mongodb+srv://mehmet:wyO9G56pYqwd2ozT@cluster0.2hlulza.mongodb.net/pcat-db?retryWrites=true&w=majority',
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      // usedFindAndModify: false,
+    }
+  )
+  .then(() => {
+    console.log('DB CONNECTED!');
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 // pcast-test-db varsa üzerine yazar yoksa oluşturur.
 
 // TEMPLATE ENGINE
@@ -30,8 +40,6 @@ app.use(
   })
 );
 
-const port = 3000;
-
 // ROUTES
 
 app.get('/', photoController.getAllPhotos);
@@ -45,6 +53,8 @@ app.get('/about', pageController.getAboutPage);
 app.get('/add', pageController.getAddPage);
 
 app.get('/photos/edit/:id', pageController.getEditPage);
+
+const port = process.env.PORT || 5000;
 
 app.listen(port, (req, res) => {
   console.log(`Sunucu ${port} portunda başlatıldı.`);
